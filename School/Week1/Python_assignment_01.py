@@ -44,15 +44,6 @@ except ValueError:
     exit()
 
 
-# Objective 5, A word of advice
-# if int(drinks) <= 0:
-#     print("Healthy choice,", name)
-# elif int(drinks) <= 7:
-#     print("You'll probably be okay,", name)
-# else:
-#     print("Drinking less would be a healthier choice,", name)
-
-
 # Objective 6, Gender-specific advice
 if drinks <= 0:
     print("Healthy choice,", name)
