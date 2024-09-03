@@ -12,32 +12,32 @@ while keep_going == "yes":
     # A while loop that keeps asking the user for a integer from the user. If no integer is given the code keeps repeating itself.
     while True:
         try:
-            size = int(input("How tall would you like it to be? "))
+            height = int(input("How tall would you like it to be? "))
             break
         except ValueError:
             print("Invalid number error")
     
-    # The if else tree for deciding what shape has to be displayed. If an incorrect shape has been given the code starts again at 
+    # The if else tree for deciding what shape has to be displayed. If an incorrect shape has been given the code starts again at
     # 'Lets draw a tree!'.
     shape = input("What shape should it have? [right/left/normal] ").lower()
 
     # Code for displaying the right side tree.
     if shape == "right":
-        for i in range(size):
-            for j in range(i+1):
+        for i in range(height):
+            for _j in range(i+1):
                 print("*", end="")
             print()
 
     # Code for displaying the left side tree.
     elif shape == "left":
-        for i in range(1, size + 1):
-            print(" " * (size - i) + "*" * i)
+        for i in range(1, height + 1):
+            print(" " * (height - i) + "*" * i)
 
     # Code for displaying the normal tree.
     elif shape == "normal":
         k = 0
-        for i in range(1, size+1):
-            for space in range(1, (size-i)+1):
+        for i in range(1, height+1):
+            for _space in range(1, (height-i)+1):
                 print(end="  ")
             while k != (2*i-1):
                 print("* ", end="")
