@@ -28,11 +28,12 @@ elif gender == "female":
 # Error handling
 else:
     gender = "None"
+    drinking_norm = 17
     print("You are one of a kind\n")
 
 
 # Objective 4, Drinks?
-drinks = int(input("How many alcoholic beverage do you drink on average per week? "))
+drinks = float(input("How many alcoholic beverage do you drink on average per week? "))
 
 try:
     print("That's", drinks*52, "per year!\n")
@@ -51,12 +52,14 @@ except ValueError:
 # else:
 #     print("Drinking less would be a healthier choice,", name)
 
+
 # Objective 6, Gender-specific advice
 if drinks <= 0:
     print("Healthy choice,", name)
 
 elif drinks <= 7:
     print("You'll probably be okay,", name)
+
 
 elif drinks <= drinking_norm: # type: ignore
     print("Drinking less would be a healthier choice,", name)
@@ -71,10 +74,10 @@ else:
 # Ob 1,
 # Ob 2, Made the user 'Anon' if they do not fill in a name.
 # Ob 3, Made a 3rd gender called 'none' with the print 'You are special'.
-# Ob 4, Made a try and except for the first 'int()' function
-#      so if that one fails the code shuts down, Instead of throwing
-#      more errors.
+#       Also made their drinking norm 17 cause thats the average.
+# Ob 4, Made a try and except for the first 'float()' function
+#       so if that one fails the code shuts down, Instead of throwing
+#       more errors.
 # Ob 5, Is incorporated in Ob 6.
-# Ob 6, If gender is not male or female it doesn't give an advise.
-#      Further handling is that the input gender is set to lowercase
-#      for better recognition.
+# Ob 6, Further handling is that the input gender is set to lowercase
+#       for better recognition.
