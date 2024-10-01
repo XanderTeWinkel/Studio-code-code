@@ -1,63 +1,54 @@
-import openpyxl
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+
+# Set up Spotify API credentials
+client_id = 'deae65fce131433e9a5877b83d89ddd6'  # Replace with your Client ID
+client_secret = '77fa1745a19a42d8a1a8239e6f8f0b61'  # Replace with your Client Secret
+
+# Authentication via Client Credentials Flow
+client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 
-def main():
-    print("***THIS IS A PERSONAL SPOTIFY ANALYZER***\n")
-    file_name = "Prive/Stemlijst.xlsx"
-
-    nested_dict = open_file(file_name)
-    print(nested_dict["Xander"], "\n")
-
-    for key , _item in nested_dict.items():
-        print(key)
-
-
-def open_file(file_name):
-    # Load the workbook
-    workbook = openpyxl.load_workbook(file_name)
-
-    # Get all sheet names
-    sheet_names = workbook.sheetnames
-
-    # Initialize an empty dictionary to accumulate data from all sheets
-    nested_dict = {}
-
-    # Loop through all sheets
-    for sheet_name in sheet_names:
-        sheet = workbook[sheet_name]
-
-        # Iterate through the rows in each sheet (skipping the header)
-        for row in sheet.iter_rows(min_row=2, values_only=True):
-            if row[0] is not None:  # Ensure there's data in the row
-                nested_dict = seperate_lines(row, nested_dict)
-
-    return nested_dict
-
-
-def seperate_lines(row, nested_dict):
-    row = list(row)
-    add_to_dict(nested_dict, row)
-    return nested_dict
-
-
-def add_to_dict(nested_dict, row):
-    # Split the names by comma and trim whitespace
-    names = [name.strip() for name in row[2].split(",")]  # Assuming names are in the 3rd column
-    title = row[0]  # Assuming the title is in the 1st column
-    artist = row[1]  # Assuming the artist is in the 2nd column
-
-    # For each name in the list, add the title and artist
-    for name in names:
-        # If the name already exists, append the title and artist to the list
-        if name in nested_dict:
-            nested_dict[name]["Title"].append(title)
-            nested_dict[name]["Artist"].append(artist)
-        else:
-            # Otherwise, create a new entry with lists for title and artist
-            nested_dict[name] = {
-                "Title": [title],
-                "Artist": [artist]
-            }
-
-
-main()
+def get_track_features(track_name, artist_name_input):      # noqa: PLR0914
+    # Search for the track by name and artist
+    query = f"track:{track_name} artist:{artist_name_input}"
+    results = sp.search(q=query, type='track', limit=1)
+    
+    # Check if any tracks were found
+    if results['tracks']['items']:                          # type: ignore
+        track = results['tracks']['items'][0]               # type: ignore
+        track_id = track['id']
+        track_name = track['name']
+        artist_name = track['artists'][0]['name']
+        artist_id = track['artists'][0]['id']
+        popularity = track['popularity']
+        
+        # Get audio features for the track
+        audio_features = sp.audio_features(track_id)[0]     # type: ignore
+        
+        # Get artist details to retrieve genre
+        artist_info = sp.artist(artist_id)                  # type: ignore
+        genres = artist_info['genres']                      # type: ignore
+        genres_str = ", ".join(genres) if genres else "Unknown"
+        
+        # Extract relevant features
+        danceability = audio_features['danceability']
+        energy = audio_features['energy']
+        valence = audio_features['valence']
+        tempo = audio_features['tempo']
+        acousticness = audio_features['acousticness']
+        
+        # Print track information and features
+        print(f"Track: {track_name} by {artist_name}")
+        print(f"Popularity: {popularity}")
+        print(f"Genres: {genres_str}")
+        print(f"Danceability: {danceability}")
+        print(f"Energy: {energy}")
+        print(f"Valence: {valence}")
+        print(f"Tempo: {tempo} BPM")
+        print(f"Acousticness: {acousticness}")
+        
+        return track_name, artist_name, popularity, genres_str, danceability, energy, valence, tempo, acousticness
+    print("Track not found")
+    return None
